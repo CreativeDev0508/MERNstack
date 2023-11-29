@@ -5,16 +5,18 @@ const bcrypt = require('bcrypt');
 
 // Register route 
 exports.registerUser = async(req, res) => {
+
     try {
-        console.log(req);
-        const { email, password } = req.body;
+        console.log(req.body);
+        const { username, password } = req.body;
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = new User({ email, password: hashedPassword });
-        await user.save();
+        const email = username;
 
-        res.status(201).json({ message: 'User registered successfully' });
+        await User.create({ email, password: hashedPassword });
+
+        res.status(200).json({ message: 'User registered successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -25,8 +27,8 @@ exports.registerUser = async(req, res) => {
  exports.loginUser = async (req, res) => {
     console.log("here===>", req.body)
     try {
-        const { email, password } = req.body;
-
+        const { username, password } = req.body;
+        const email = username;
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({ error: 'Invalid email or password' });
