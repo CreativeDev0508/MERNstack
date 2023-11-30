@@ -8,11 +8,9 @@ exports.registerUser = async(req, res) => {
 
     try {
         console.log(req.body);
-        const { username, password } = req.body;
+        const { email, password } = req.body;
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        const email = username;
 
         await User.create({ email, password: hashedPassword });
 
@@ -27,8 +25,7 @@ exports.registerUser = async(req, res) => {
  exports.loginUser = async (req, res) => {
     console.log("here===>", req.body)
     try {
-        const { username, password } = req.body;
-        const email = username;
+        const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({ error: 'Invalid email or password' });
